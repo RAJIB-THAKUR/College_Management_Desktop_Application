@@ -10,8 +10,10 @@ namespace Tabwindowsform.Model
     {
        // public clsPerson Person_Id { get; set; }
         public int Person_Id { get; set; }
+        public string FullName { get; set; }
         public string Building_Name { get; set; }
         public int Room_No { get; set; }
         public string Allocated_To { get; set; }
+        
     }
 }

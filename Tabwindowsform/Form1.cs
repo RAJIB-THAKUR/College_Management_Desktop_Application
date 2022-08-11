@@ -40,6 +40,10 @@ namespace Tabwindowsform
         string buildingName;
         int roomNo;
         string Type1;
+
+        int flag = 0;
+        string currBuildingName;
+        string prevBuildingName;
         public Form1()
         {
             InitializeComponent();
@@ -60,13 +64,25 @@ namespace Tabwindowsform
                         depts.Add(dept);
                 });
             }
+            //-----Tab1 dept
             cmbxDeptName.DataSource = depts;
             cmbxDeptName.DisplayMember = "deptName";
             cmbxDeptName.ValueMember = "dept_Id";
 
+            //-----Tab3 dept
             cmbDepartment.DataSource = depts;
             cmbDepartment.DisplayMember = "deptName";
             cmbDepartment.ValueMember = "dept_Id";
+
+            //-----Tab4 dept
+            cmbxDept_Name.DataSource = depts;
+            cmbxDept_Name.DisplayMember = "deptName";
+            cmbxDept_Name.ValueMember = "dept_Id";
+
+            //-----Tab6 dept
+            cmbxDept__Name.DataSource = depts;
+            cmbxDept__Name.DisplayMember = "deptName";
+            cmbxDept__Name.ValueMember = "dept_Id";
 
             //---------------------CITIES FROM DATABASE
 
@@ -110,11 +126,25 @@ namespace Tabwindowsform
                         Sems.Add(sem);
                 });
             }
+            //Tab-3
             cmbSemester.DataSource = Sems;
             cmbSemester.DisplayMember = "sem_Name";
             cmbSemester.ValueMember = "sem_id";
 
+            //Tab-4
+            cmbxSem_Name.DataSource = Sems;
+            cmbxSem_Name.DisplayMember = "sem_Name";
+            cmbxSem_Name.ValueMember = "sem_id";
+
+            //Tab-6
+            cmbxSem__Name.DataSource = Sems;
+            cmbxSem__Name.DisplayMember = "sem_Name";
+            cmbxSem__Name.ValueMember = "sem_id";
+
+
+            
             //---------------------------
+
 
         }
 
@@ -157,8 +187,7 @@ namespace Tabwindowsform
             { Type = "Adminsitrator"; }
 
             string deptName = cmbxDeptName.SelectedItem.ToString();
-
-
+            
             if (F_Name != null && L_Name != null && Address != null && Mobile != null && Mobile.Length==10 && cmbxCity.SelectedValue != null && cmbxDeptName.SelectedValue != null && (rbtnStudent.Checked == true || rbtnFaculty.Checked == true || rbtnAdministrator.Checked == true))
             {
                 if (clsSQLWrapper.s_blnHasConnection())
@@ -227,8 +256,8 @@ namespace Tabwindowsform
         {
             //----Person Table-----
             string query;
-
-            query = "select * from Address inner join Person on Address.person_Id=Person.person_Id inner join City on City.c_ID=Address.c_Id left join Department on Department.dept_Id = Person.dept_Id; ";
+            //query = "select * from Address inner join Person on Address.person_Id=Person.person_Id inner join City on City.c_ID=Address.c_Id left join Department on Department.dept_Id = Person.dept_Id; ";
+            query = "select * from Person inner join Address on Address.person_Id=Person.person_Id inner join City on City.c_ID=Address.c_Id left join Department on Department.dept_Id = Person.dept_Id; ";
             DataSet dsData = clsSQLWrapper.runUserQuery(query);
 
             List<Model.clsPerson> persons = new List<Model.clsPerson>();
@@ -373,63 +402,116 @@ namespace Tabwindowsform
         //ADD button of room allocation
         private void button1_Click(object sender, EventArgs e)
         {
+            currBuildingName= cmbxBuildingName.SelectedItem.ToString();
+            if (currBuildingName == prevBuildingName)
+            { 
+                buildingName = currBuildingName;
+                Name = cmbxFirstName.SelectedItem.ToString();
 
-            Name = txtName.Text;
-            buildingName = cmbxBuildingName.SelectedItem.ToString();
-            
+                //--------------------Allocate_Hostel------------------------------
 
-            //--------------------Allocate_Hostel------------------------------
-
-
-            if (Name != null && cmbxBuildingName.SelectedValue != null && cmbxRoomNo.SelectedValue != null)
-            {
-                
-                if (clsSQLWrapper.s_blnHasConnection())
+                if (cmbxFirstName.SelectedValue != null && cmbxBuildingName.SelectedValue != null && cmbxRoomNo.SelectedValue != null)
                 {
-                    if (rbtnStud.Checked)
-                        Type1="Student";
-                    else if (rbtnFac.Checked)
-                        Type1 = "Faculty";
-                    List<SqlParameter> lstPara = new List<SqlParameter>();
-                    lstPara.Add(new SqlParameter { ParameterName = "@Name", SqlDbType = SqlDbType.VarChar, Value = Name });
-                    lstPara.Add(new SqlParameter { ParameterName = "@Type", SqlDbType = SqlDbType.VarChar, Value = Type1 });
-                    return_person_ID = clsSQLWrapper.runProcedure("Return_Person_Id", lstPara);
-                    
-                }
-                if (return_person_ID != 0)
-                {
+
                     if (clsSQLWrapper.s_blnHasConnection())
                     {
-
-                        List<SqlParameter> lstPara = new List<SqlParameter>();
-                        lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.VarChar, Value = return_person_ID });
-                        lstPara.Add(new SqlParameter { ParameterName = "@Building_Name", SqlDbType = SqlDbType.VarChar, Value = cmbxBuildingName.SelectedValue });
-                        lstPara.Add(new SqlParameter { ParameterName = "@RoomNo", SqlDbType = SqlDbType.Int, Value = cmbxRoomNo.SelectedValue });
-
                         if (rbtnStud.Checked)
-                            clsSQLWrapper.runProcedure("Insert_Hostel", lstPara);
+                            Type1 = "Student";
                         else if (rbtnFac.Checked)
-                            clsSQLWrapper.runProcedure("Insert_Faculty", lstPara);
+                            Type1 = "Faculty";
+                        List<SqlParameter> lstPara = new List<SqlParameter>();
+                        lstPara.Add(new SqlParameter { ParameterName = "@Name", SqlDbType = SqlDbType.VarChar, Value = cmbxFirstName.SelectedValue });
+                        lstPara.Add(new SqlParameter { ParameterName = "@Type", SqlDbType = SqlDbType.VarChar, Value = Type1 });
+                        return_person_ID = clsSQLWrapper.runProcedure("Return_Person_Id", lstPara);
+
                     }
-                    MessageBox.Show("Room Allocation Successful");
-                    //func_Empty_Filled_Person_Details();
+                    if (return_person_ID != 0)
+                    {
+
+                        if (clsSQLWrapper.s_blnHasConnection())
+                        {
+
+                            List<SqlParameter> lstPara = new List<SqlParameter>();
+                            lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.VarChar, Value = return_person_ID });
+                            lstPara.Add(new SqlParameter { ParameterName = "@Building_Name", SqlDbType = SqlDbType.VarChar, Value = cmbxBuildingName.SelectedValue });
+                            lstPara.Add(new SqlParameter { ParameterName = "@RoomNo", SqlDbType = SqlDbType.Int, Value = cmbxRoomNo.SelectedValue });
+
+                            List<SqlParameter> lst_Para = new List<SqlParameter>();
+                            lst_Para.Add(new SqlParameter { ParameterName = "@Search_Id", SqlDbType = SqlDbType.Int, Value = return_person_ID });
+                            int flag;
+                            if (rbtnStud.Checked)
+                            {
+                                flag = clsSQLWrapper.runProcedure("spCheckId_in_Hostel", lst_Para);
+                                //when person_Id doesn't exist in Hostel
+                                if (flag == 0)
+                                {
+                                    clsSQLWrapper.runProcedure("Insert_Hostel", lstPara);
+                                    MessageBox.Show("Room Allocation Successful");
+                                }
+
+                                else
+                                {
+                                    MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
+                                }
+
+                            }
+
+                            else if (rbtnFac.Checked)
+                            {
+                                flag = clsSQLWrapper.runProcedure("spCheckId_in_Faculty", lst_Para);
+                                //when person_Id doesn't exist in Faculty
+                                if (flag == 0)
+                                {
+                                    clsSQLWrapper.runProcedure("Insert_Faculty", lstPara);
+                                    MessageBox.Show("Room Allocation Successful");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Enter correect name");
+                    MessageBox.Show("Incomplete Details");
                 }
-
-
             }
             else
             {
-                MessageBox.Show("Incomplete Details");
+                MessageBox.Show("You have changed your Building Name \nClick Next to refresh and Try Again");
             }
         }
 
        
         private void rbtnStud_CheckedChanged(object sender, EventArgs e)
         {
+
+            //---------------------FirstName FROM Person Table
+
+            DataSet ds6 = clsSQLWrapper.runUserQuery("Select * from Person where type='Student';");
+
+            List<Model.clsPerson> persons = new List<Model.clsPerson>();
+            if (ds6 != null && ds6.Tables[0].Rows.Count > 0)
+            {
+
+                Parallel.For(0, ds6.Tables[0].Rows.Count, i =>
+                {
+                    Model.clsPerson person = new Model.clsPerson();
+                    person.FirstName = ds6.Tables[0].Rows[i]["firstName"].ToString();
+                   
+                    lock (persons)
+                        persons.Add(person);
+                });
+            }
+
+            cmbxFirstName.DataSource = persons;
+            cmbxFirstName.DisplayMember = "firstName";
+            cmbxFirstName.ValueMember = "firstName";
+
+
+            //---------------------Building Name And Room no from Hostel
             DataSet ds4 = clsSQLWrapper.runUserQuery("Select * from Hostel where id IS NULL");
 
             List<Model.clsHostel> Hostels = new List<Model.clsHostel>();
@@ -439,28 +521,44 @@ namespace Tabwindowsform
                 Parallel.For(0, ds4.Tables[0].Rows.Count, i =>
                 {
                     Model.clsHostel Hostel = new Model.clsHostel();
-                    // Hostel.Person_Id = Convert.ToInt32(ds4.Tables[0].Rows[i]["id"]);
                     Hostel.Building_Name = (ds4.Tables[0].Rows[i]["BuildingName"]).ToString();
-                    Hostel.Room_No = Convert.ToInt32(ds4.Tables[0].Rows[i]["RoomNumber"]);
-                    Hostel.Allocated_To = (ds4.Tables[0].Rows[i]["AllocatedTo"]).ToString();
 
                     lock (Hostels)
                         Hostels.Add(Hostel);
                 });
             }
 
-            cmbxBuildingName.DataSource = Hostels;
-            cmbxBuildingName.DisplayMember = "Building_Name";
-            cmbxBuildingName.ValueMember = "Building_Name";
+            List<string> buildingNameHostel = Hostels.Select(s => s.Building_Name).Distinct().ToList();
+            cmbxBuildingName.DataSource = buildingNameHostel;
 
-            cmbxRoomNo.DataSource = Hostels;
-            cmbxRoomNo.DisplayMember = "Room_No";
-            cmbxRoomNo.ValueMember = "Room_No";
         }
 
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
+            //---------------------FirstName FROM Person Table
+
+            DataSet ds6 = clsSQLWrapper.runUserQuery("Select * from Person where type='Faculty';");
+
+            List<Model.clsPerson> persons = new List<Model.clsPerson>();
+            if (ds6 != null && ds6.Tables[0].Rows.Count > 0)
+            {
+
+                Parallel.For(0, ds6.Tables[0].Rows.Count, i =>
+                {
+                    Model.clsPerson person = new Model.clsPerson();
+                    person.FirstName = ds6.Tables[0].Rows[i]["firstName"].ToString();
+                    lock (persons)
+                        persons.Add(person);
+                });
+            }
+
+            cmbxFirstName.DataSource = persons;
+            cmbxFirstName.DisplayMember = "firstName";
+            cmbxFirstName.ValueMember = "firstName";
+
+
+            //---------------------Building Name And Room no from Faculty
             DataSet ds4 = clsSQLWrapper.runUserQuery("Select * from FacultyRoom where id IS NULL");
 
             List<Model.clsFaculty> Faculties = new List<Model.clsFaculty>();
@@ -470,24 +568,356 @@ namespace Tabwindowsform
                 Parallel.For(0, ds4.Tables[0].Rows.Count, i =>
                 {
                     Model.clsFaculty Faculty = new Model.clsFaculty();
-                    // Hostel.Person_Id = Convert.ToInt32(ds4.Tables[0].Rows[i]["id"]);
                     Faculty.Building_Name = (ds4.Tables[0].Rows[i]["BuildingName"]).ToString();
-                    Faculty.Room_No = Convert.ToInt32(ds4.Tables[0].Rows[i]["RoomNumber"]);
-                    Faculty.Allocated_To = (ds4.Tables[0].Rows[i]["AllocatedTo"]).ToString();
 
                     lock (Faculties)
                         Faculties.Add(Faculty);
                 });
             }
+            List<string> buildingNameFaculty = Faculties.Select(s => s.Building_Name).Distinct().ToList();
+            cmbxBuildingName.DataSource = buildingNameFaculty;
 
-            cmbxBuildingName.DataSource = Faculties;
-            cmbxBuildingName.DisplayMember = "Building_Name";
-            cmbxBuildingName.ValueMember = "Building_Name";
-
-            cmbxRoomNo.DataSource = Faculties;
-            cmbxRoomNo.DisplayMember = "Room_No";
-            cmbxRoomNo.ValueMember = "Room_No";
+            //----------------------
         }
 
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            funcDisplayAllSubjects();
+        }
+        public void funcDisplayAllSubjects()
+        {
+            //----Subject Table-----
+            string QueryForSubject;
+
+            QueryForSubject = "Select sub_code,Department.dept_Id,sub_name,deptName,sem_Name,isElective,isCommonForAll from Subject inner join Department on Subject.dept_Id = Department.dept_Id inner join Semester on Subject.sem_id = Semester.sem_id;";
+
+            DataSet dsData2 = clsSQLWrapper.runUserQuery(QueryForSubject);
+
+            List<Model.clsSubject> subject = new List<Model.clsSubject>();
+            Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+            {
+                Model.clsPerson person1 = new Model.clsPerson();
+                Model.clsDepartment dept1 = new Model.clsDepartment();
+                Model.clsSubject sub = new Model.clsSubject();
+                Model.clsSemester semester = new Model.clsSemester();
+
+                sub.sub_code = dsData2.Tables[0].Rows[i]["sub_code"].ToString();
+                sub.sub_name = dsData2.Tables[0].Rows[i]["sub_name"].ToString();
+                sub.isElective = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isElective"]);
+
+                dept1.dept_Id = Convert.ToInt32(dsData2.Tables[0].Rows[i]["dept_Id"]);
+                dept1.deptName = dsData2.Tables[0].Rows[i]["deptName"].ToString();
+
+                semester.sem_Name = dsData2.Tables[0].Rows[i]["sem_Name"].ToString();
+                sub.isCommonForAll = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isCommonForAll"]);
+                sub.sub_sem_name = semester.sem_Name;
+                sub.sub_dept_name = dept1.deptName;
+               
+                lock (subject)
+                    subject.Add(sub);
+            });
+            
+            dataGridViewSou.DataSource = subject/*.OrderBy(x=>x.dept_Id)*/;
+
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void btnShow_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            funcDisplaySubSemDeptWise();
+        }
+        public void funcDisplaySubSemDeptWise()
+        {
+            int intSelectedDept = Convert.ToInt32(cmbxDept_Name.SelectedValue);
+            int intSelectedSem = Convert.ToInt32(cmbxSem_Name.SelectedValue);
+            string QueryForSubject;
+
+            QueryForSubject = "Select_Sub_Dept_Sem_Wise";
+
+            List<SqlParameter> lstPara = new List<SqlParameter>();
+            lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.VarChar, Value = intSelectedDept });
+            lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.VarChar, Value = intSelectedSem });
+
+            DataSet dsData2 = clsSQLWrapper.runProcedureUser(QueryForSubject,lstPara);
+
+            List<Model.clsSubject> subject = new List<Model.clsSubject>();
+            Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+            {
+                Model.clsPerson person1 = new Model.clsPerson();
+                Model.clsDepartment dept1 = new Model.clsDepartment();
+                Model.clsSubject sub = new Model.clsSubject();
+                Model.clsSemester semester = new Model.clsSemester();
+
+                dept1.deptName = dsData2.Tables[0].Rows[i]["deptName"].ToString();
+                sub.sub_dept_name = dept1.deptName;
+                sub.sub_code = dsData2.Tables[0].Rows[i]["sub_code"].ToString();
+                sub.sub_name = dsData2.Tables[0].Rows[i]["sub_name"].ToString();
+                
+                sub.isElective = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isElective"]);
+                semester.sem_Name = dsData2.Tables[0].Rows[i]["sem_Name"].ToString();
+                sub.isCommonForAll = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isCommonForAll"]);
+                sub.sub_sem_name = semester.sem_Name;
+                
+
+                lock (subject)
+                    subject.Add(sub);
+            });
+
+            dataGridViewSou.DataSource = subject;
+
+        }
+
+        private void cmbxDept_Name_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void label14_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (rbtnStud.Checked)
+                funcDisplayHostelRoom();
+            else if (rbtnFac.Checked)
+                funcDisplayFacultylRoom();
+            else
+            {
+                MessageBox.Show("Select \"Student\" or \"Faculty\"");
+            }
+        }
+        public void funcDisplayHostelRoom()
+        {
+            //----Hostel Table-----
+            string QueryForHostelDetails;
+
+            QueryForHostelDetails = "Select id,firstName,lastName,BuildingName,RoomNumber,AllocatedTo from Hostel inner join Person on Hostel.id = Person.person_Id;";
+
+            DataSet dsData2 = clsSQLWrapper.runUserQuery(QueryForHostelDetails);
+
+            List<Model.clsHostel> lstHostel = new List<Model.clsHostel>();
+            Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+            {
+                Model.clsPerson person = new Model.clsPerson();
+                Model.clsHostel Hostel=new Model.clsHostel();
+
+                person.FirstName = dsData2.Tables[0].Rows[i]["firstName"].ToString();
+                person.LastName = dsData2.Tables[0].Rows[i]["lastName"].ToString();
+
+                Hostel.Person_Id = Convert.ToInt32(dsData2.Tables[0].Rows[i]["id"]);
+                Hostel.Building_Name = dsData2.Tables[0].Rows[i]["BuildingName"].ToString();
+                Hostel.Room_No = Convert.ToInt32(dsData2.Tables[0].Rows[i]["RoomNumber"]);
+                Hostel.Allocated_To = dsData2.Tables[0].Rows[i]["AllocatedTo"].ToString();
+
+                Hostel.FullName = person.FirstName + " " + person.LastName;
+
+                lock (lstHostel)
+                    lstHostel.Add(Hostel);
+            });
+
+            dataGridViewShowroom.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
+        }
+        public void funcDisplayFacultylRoom()
+        {
+            //----Facullty Table-----
+            string QueryForHostelDetails;
+
+            QueryForHostelDetails = "Select Id,firstName,lastName,BuildingName,RoomNumber,AllocatedTo from FacultyRoom inner join Person on FacultyRoom.id = Person.person_Id;";
+
+            DataSet dsData2 = clsSQLWrapper.runUserQuery(QueryForHostelDetails);
+
+            List<Model.clsHostel> lstHostel = new List<Model.clsHostel>();
+            Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+            {
+                Model.clsPerson person = new Model.clsPerson();
+                Model.clsHostel Hostel = new Model.clsHostel();
+
+                person.FirstName = dsData2.Tables[0].Rows[i]["firstName"].ToString();
+                person.LastName = dsData2.Tables[0].Rows[i]["lastName"].ToString();
+
+                Hostel.Person_Id = Convert.ToInt32(dsData2.Tables[0].Rows[i]["id"]);
+                Hostel.Building_Name = dsData2.Tables[0].Rows[i]["BuildingName"].ToString();
+                Hostel.Room_No = Convert.ToInt32(dsData2.Tables[0].Rows[i]["RoomNumber"]);
+                Hostel.Allocated_To = dsData2.Tables[0].Rows[i]["AllocatedTo"].ToString();
+
+                Hostel.FullName = person.FirstName + " " + person.LastName;
+
+                lock (lstHostel)
+                    lstHostel.Add(Hostel);
+            });
+
+            dataGridViewShowroom.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
+        }
+
+        private void label19_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAddElectiveSub_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbxBuildingName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox5_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnToShowName_Click(object sender, EventArgs e)
+        {
+            //---------------------FirstName FROM Person Table for Subject Allocation
+            if (clsSQLWrapper.s_blnHasConnection())
+            {
+
+                List<SqlParameter> lstPara = new List<SqlParameter>();
+                lstPara.Add(new SqlParameter { ParameterName = "@dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
+
+                string query = "spName_WRT_Dept";
+                DataSet ds9 = clsSQLWrapper.runProcedureUser(query, lstPara);
+
+                List<Model.clsPerson> persons = new List<Model.clsPerson>();
+                if (ds9 != null && ds9.Tables[0].Rows.Count > 0)
+                {
+
+                    Parallel.For(0, ds9.Tables[0].Rows.Count, i =>
+                    {
+                        Model.clsPerson person = new Model.clsPerson();
+                        person.FirstName = ds9.Tables[0].Rows[i]["firstName"].ToString();
+
+                        lock (persons)
+                            persons.Add(person);
+                    });
+                }
+
+                cmbx__FirstName.DataSource = persons;
+                cmbx__FirstName.DisplayMember = "firstName";
+                cmbx__FirstName.ValueMember = "firstName";
+          
+
+                //---------------------Elective Subjects FROM Subject Table for Subject Allocation
+            
+                List<SqlParameter> lstPara1 = new List<SqlParameter>();
+                lstPara1.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = cmbxSem__Name.SelectedValue });
+                lstPara1.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
+                query = "spElective_subCode_WRT_Dept_Sem";
+                DataSet ds11 = clsSQLWrapper.runProcedureUser(query, lstPara1);
+
+                List<Model.clsSubject> Subjects = new List<Model.clsSubject>();
+                if (ds11 != null && ds11.Tables[0].Rows.Count > 0)
+                {
+
+                    Parallel.For(0, ds11.Tables[0].Rows.Count, i =>
+                    {
+                        Model.clsSubject subject = new Model.clsSubject();
+                        subject.sub_name = ds11.Tables[0].Rows[i]["sub_name"].ToString();
+
+                        lock (Subjects)
+                            Subjects.Add(subject);
+                    });
+                }
+
+                cmbxElecSub.DataSource = Subjects;
+                cmbxElecSub.DisplayMember = "sub_name";
+                cmbxElecSub.ValueMember = "sub_name";
+            }
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            flag = 1;
+            prevBuildingName = cmbxBuildingName.SelectedValue.ToString();
+            if (clsSQLWrapper.s_blnHasConnection())
+            {
+                if (rbtnStud.Checked)
+                {
+                    List<SqlParameter> lstPara = new List<SqlParameter>();
+                    lstPara.Add(new SqlParameter { ParameterName = "@Building_Name", SqlDbType = SqlDbType.VarChar, Value = cmbxBuildingName.SelectedValue });
+
+                    string query = "sp_RoomNoHostel_WRT_BuildingName";
+                    DataSet ds4 = clsSQLWrapper.runProcedureUser(query, lstPara);
+
+
+                    List<Model.clsHostel> Hostels = new List<Model.clsHostel>();
+                    if (ds4 != null && ds4.Tables[0].Rows.Count > 0)
+                    {
+
+                        Parallel.For(0, ds4.Tables[0].Rows.Count, i =>
+                        {
+                            Model.clsHostel Hostel = new Model.clsHostel();
+                            Hostel.Room_No = Convert.ToInt32(ds4.Tables[0].Rows[i]["RoomNumber"]);
+
+                            lock (Hostels)
+                                Hostels.Add(Hostel);
+                        });
+                    }
+
+
+                    cmbxRoomNo.DataSource = Hostels;
+                    cmbxRoomNo.DisplayMember = "Room_No";
+                    cmbxRoomNo.ValueMember = "Room_No";
+                }
+                else if (rbtnFac.Checked)
+                {
+                    List<SqlParameter> lstPara = new List<SqlParameter>();
+                    lstPara.Add(new SqlParameter { ParameterName = "@Building_Name", SqlDbType = SqlDbType.VarChar, Value = cmbxBuildingName.SelectedValue });
+
+                    string query = "sp_RoomNoFaculty_WRT_BuildingName";
+                    DataSet ds4 = clsSQLWrapper.runProcedureUser(query, lstPara);
+
+
+                    List<Model.clsFaculty> faculties = new List<Model.clsFaculty>();
+                    if (ds4 != null && ds4.Tables[0].Rows.Count > 0)
+                    {
+
+                        Parallel.For(0, ds4.Tables[0].Rows.Count, i =>
+                        {
+                            Model.clsFaculty faculty = new Model.clsFaculty();
+                            faculty.Room_No = Convert.ToInt32(ds4.Tables[0].Rows[i]["RoomNumber"]);
+
+                            lock (faculties)
+                                faculties.Add(faculty);
+                        });
+                    }
+
+
+                    cmbxRoomNo.DataSource = faculties;
+                    cmbxRoomNo.DisplayMember = "Room_No";
+                    cmbxRoomNo.ValueMember = "Room_No";
+                }
+
+            } 
+        }
     }
 }
