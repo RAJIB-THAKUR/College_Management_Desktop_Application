@@ -44,6 +44,11 @@ namespace Tabwindowsform
         int flag = 0;
         string currBuildingName;
         string prevBuildingName;
+
+        //ELECTIVE subject Allocation Variables
+        int return_person_ID2;
+        int flag2=0;
+        string subCodeSelected;
         public Form1()
         {
             InitializeComponent();
@@ -468,6 +473,7 @@ namespace Tabwindowsform
                                 else
                                 {
                                     MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
+                            
                                 }
                             }
                         }
@@ -505,7 +511,7 @@ namespace Tabwindowsform
                         persons.Add(person);
                 });
             }
-
+            
             cmbxFirstName.DataSource = persons;
             cmbxFirstName.DisplayMember = "firstName";
             cmbxFirstName.ValueMember = "firstName";
@@ -776,7 +782,29 @@ namespace Tabwindowsform
 
         private void btnAddElectiveSub_Click(object sender, EventArgs e)
         {
+            //string subcode = cmbxElecSub.SelectedValue.ToString();
+            //int personID= Convert.ToInt32(cmbx__FirstName.SelectedValue);
+            //int intSelectedDept = Convert.ToInt32(cmbxDept_Name.SelectedValue);
+            
+ 
+                if (clsSQLWrapper.s_blnHasConnection())
+                {
+                    string query = "Insert_Elective_Subject"; //string deptName = cmbxDeptName.SelectedItem.ToString();
+                    List<SqlParameter> lstSPara = new List<SqlParameter>();
+                    lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+                    lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = cmbxElecSub.SelectedValue });
 
+                    //Checks If Elective subject already alloted to the person
+                    int checkIfExist = clsSQLWrapper.runProcedure(query, lstSPara);
+                    if (checkIfExist == 0)
+                    {
+                        MessageBox.Show("Elective Subject already added for the person");
+                    }
+                    else if (checkIfExist == 1)
+                    {
+                        MessageBox.Show("Elective Subject added Successfully for the person");
+                    }
+                }
         }
 
         private void txtName_TextChanged(object sender, EventArgs e)
@@ -814,6 +842,8 @@ namespace Tabwindowsform
                     {
                         Model.clsPerson person = new Model.clsPerson();
                         person.FirstName = ds9.Tables[0].Rows[i]["firstName"].ToString();
+                        person.person_Id = Convert.ToInt32(ds9.Tables[0].Rows[i]["person_Id"]);
+
 
                         lock (persons)
                             persons.Add(person);
@@ -822,7 +852,7 @@ namespace Tabwindowsform
 
                 cmbx__FirstName.DataSource = persons;
                 cmbx__FirstName.DisplayMember = "firstName";
-                cmbx__FirstName.ValueMember = "firstName";
+                cmbx__FirstName.ValueMember = "person_Id";
           
 
                 //---------------------Elective Subjects FROM Subject Table for Subject Allocation
@@ -841,6 +871,7 @@ namespace Tabwindowsform
                     {
                         Model.clsSubject subject = new Model.clsSubject();
                         subject.sub_name = ds11.Tables[0].Rows[i]["sub_name"].ToString();
+                        subject.sub_code = ds11.Tables[0].Rows[i]["sub_code"].ToString();
 
                         lock (Subjects)
                             Subjects.Add(subject);
@@ -849,9 +880,8 @@ namespace Tabwindowsform
 
                 cmbxElecSub.DataSource = Subjects;
                 cmbxElecSub.DisplayMember = "sub_name";
-                cmbxElecSub.ValueMember = "sub_name";
+                cmbxElecSub.ValueMember = "sub_code";
             }
-
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -918,6 +948,111 @@ namespace Tabwindowsform
                 }
 
             } 
+        }
+
+        private void cmbx__FirstName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbxFirstName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAddNonElective_Click(object sender, EventArgs e)
+        {
+            List<SqlParameter> lstPara = new List<SqlParameter>();
+            lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
+            lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = cmbxSem__Name.SelectedValue });
+
+            string query = "sp_Non_Elective_subCode_WRT_Dept_Sem";
+            DataSet dsData = clsSQLWrapper.runProcedureUser(query, lstPara);
+            int checkIfExist=1;
+            foreach (DataRow dr in dsData.Tables[0].Rows)
+            {
+                string toInsert_Sub_code = (string)dr[0];
+                string query2 = "Insert_non_Elective_Subject"; 
+                List<SqlParameter> lstSPara = new List<SqlParameter>();
+                lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+                lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = toInsert_Sub_code });
+
+                //Checks If Elective subject already alloted to the person
+                if (checkIfExist == 1)
+                    checkIfExist = clsSQLWrapper.runProcedure(query2, lstSPara);
+                else
+                    break;
+            }
+            if(checkIfExist == 0)
+            {
+                MessageBox.Show("Non-Elective Subjects already added");
+            }
+            else
+            {
+                MessageBox.Show("Non-Elective Subjects succesfully added");
+            }
+
+        }
+
+        private void cmbxDept__Name_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            funcDisplay_person_Sub();
+        }
+        public void funcDisplay_person_Sub()
+        {
+            int intSelectedDept = Convert.ToInt32(cmbxDept__Name.SelectedValue);
+            int intSelectedSem = Convert.ToInt32(cmbxSem__Name.SelectedValue);
+            string QueryForPersonSubject;
+
+            QueryForPersonSubject = "sp_Select_Person_Sub";
+
+            List<SqlParameter> lstPara = new List<SqlParameter>();
+            lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = intSelectedDept });
+            lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = intSelectedSem });
+            lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+
+            DataSet dsData2 = clsSQLWrapper.runProcedureUser(QueryForPersonSubject, lstPara);
+
+            List<Model.clsSubject> subject = new List<Model.clsSubject>();
+            Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+            {
+                Model.clsPerson person1 = new Model.clsPerson();
+                Model.clsDepartment dept1 = new Model.clsDepartment();
+                Model.clsSubject sub = new Model.clsSubject();
+                Model.clsSemester semester = new Model.clsSemester();
+                Model.clsStudySub subStudy = new Model.clsStudySub();
+
+                dept1.deptName = dsData2.Tables[0].Rows[i]["deptName"].ToString();
+                sub.sub_dept_name = dept1.deptName;
+                sub.sub_code = dsData2.Tables[0].Rows[i]["sub_code"].ToString();
+                sub.sub_name = dsData2.Tables[0].Rows[i]["sub_name"].ToString();
+
+                sub.isElective = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isElective"]);
+                semester.sem_Name = dsData2.Tables[0].Rows[i]["sem_Name"].ToString();
+                sub.isCommonForAll = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isCommonForAll"]);
+                sub.sub_sem_name = semester.sem_Name;
+
+
+                lock (subject)
+                    subject.Add(sub);
+            });
+
+            dataGridView2.DataSource = subject;
+
+        }
+
+        private void txtMobile_TextChanged(object sender, EventArgs e)
+        {
+            if (System.Text.RegularExpressions.Regex.IsMatch(txtMobile.Text, "[^0-9]"))
+            {
+                MessageBox.Show("Please enter only numbers.");
+                txtMobile.Text = txtMobile.Text.Remove(txtMobile.Text.Length - 1);
+            }
         }
     }
 }

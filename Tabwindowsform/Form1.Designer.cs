@@ -70,7 +70,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
             this.label18 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.cmbxSem_Name = new System.Windows.Forms.ComboBox();
@@ -78,7 +78,8 @@
             this.cmbxDept_Name = new System.Windows.Forms.ComboBox();
             this.dataGridViewSou = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
             this.cmbxFirstName = new System.Windows.Forms.ComboBox();
             this.button3 = new System.Windows.Forms.Button();
             this.dataGridViewShowroom = new System.Windows.Forms.DataGridView();
@@ -90,18 +91,21 @@
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.btnAddElectiveSub = new System.Windows.Forms.Button();
-            this.cmbxSem__Name = new System.Windows.Forms.ComboBox();
-            this.cmbxDept__Name = new System.Windows.Forms.ComboBox();
-            this.cmbxElecSub = new System.Windows.Forms.ComboBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.cmbx__FirstName = new System.Windows.Forms.ComboBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.cmbxElecSub = new System.Windows.Forms.ComboBox();
+            this.cmbxDept__Name = new System.Windows.Forms.ComboBox();
+            this.cmbxSem__Name = new System.Windows.Forms.ComboBox();
+            this.btnAddElectiveSub = new System.Windows.Forms.Button();
             this.label19 = new System.Windows.Forms.Label();
+            this.cmbx__FirstName = new System.Windows.Forms.ComboBox();
             this.btnToShowName = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.btnAddNonElective = new System.Windows.Forms.Button();
+            this.label23 = new System.Windows.Forms.Label();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.button5 = new System.Windows.Forms.Button();
             this.clsPersonBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.clsPersonBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnShow.SuspendLayout();
@@ -111,11 +115,12 @@
             this.tabPage3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSou)).BeginInit();
             this.tabPage4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShowroom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSou)).BeginInit();
             this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShowroom)).BeginInit();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.clsPersonBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.clsPersonBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -125,9 +130,9 @@
             this.btnShow.Controls.Add(this.tabPage1);
             this.btnShow.Controls.Add(this.tabPage2);
             this.btnShow.Controls.Add(this.tabPage3);
+            this.btnShow.Controls.Add(this.tabPage4);
             this.btnShow.Controls.Add(this.tabPage5);
             this.btnShow.Controls.Add(this.tabPage6);
-            this.btnShow.Controls.Add(this.tabPage4);
             this.btnShow.Location = new System.Drawing.Point(12, 0);
             this.btnShow.Name = "btnShow";
             this.btnShow.SelectedIndex = 0;
@@ -223,6 +228,7 @@
             this.txtMobile.Name = "txtMobile";
             this.txtMobile.Size = new System.Drawing.Size(245, 22);
             this.txtMobile.TabIndex = 12;
+            this.txtMobile.TextChanged += new System.EventHandler(this.txtMobile_TextChanged);
             // 
             // rbtnAdministrator
             // 
@@ -514,6 +520,7 @@
             // 
             this.textSubcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.textSubcode.Location = new System.Drawing.Point(384, 149);
+            this.textSubcode.MaxLength = 7;
             this.textSubcode.Name = "textSubcode";
             this.textSubcode.Size = new System.Drawing.Size(227, 22);
             this.textSubcode.TabIndex = 6;
@@ -580,21 +587,21 @@
             this.label8.TabIndex = 0;
             this.label8.Text = "Subject Code";
             // 
-            // tabPage5
+            // tabPage4
             // 
-            this.tabPage5.Controls.Add(this.label18);
-            this.tabPage5.Controls.Add(this.label14);
-            this.tabPage5.Controls.Add(this.cmbxSem_Name);
-            this.tabPage5.Controls.Add(this.button2);
-            this.tabPage5.Controls.Add(this.cmbxDept_Name);
-            this.tabPage5.Controls.Add(this.dataGridViewSou);
-            this.tabPage5.Controls.Add(this.button1);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(858, 584);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Subject Details";
-            this.tabPage5.UseVisualStyleBackColor = true;
+            this.tabPage4.Controls.Add(this.label18);
+            this.tabPage4.Controls.Add(this.label14);
+            this.tabPage4.Controls.Add(this.cmbxSem_Name);
+            this.tabPage4.Controls.Add(this.button2);
+            this.tabPage4.Controls.Add(this.cmbxDept_Name);
+            this.tabPage4.Controls.Add(this.dataGridViewSou);
+            this.tabPage4.Controls.Add(this.button1);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(858, 584);
+            this.tabPage4.TabIndex = 4;
+            this.tabPage4.Text = "Subject Details";
+            this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // label18
             // 
@@ -625,7 +632,7 @@
             this.cmbxSem_Name.FormattingEnabled = true;
             this.cmbxSem_Name.Location = new System.Drawing.Point(538, 494);
             this.cmbxSem_Name.Name = "cmbxSem_Name";
-            this.cmbxSem_Name.Size = new System.Drawing.Size(126, 24);
+            this.cmbxSem_Name.Size = new System.Drawing.Size(121, 24);
             this.cmbxSem_Name.TabIndex = 5;
             // 
             // button2
@@ -670,26 +677,37 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // tabPage4
+            // tabPage6
             // 
-            this.tabPage4.Controls.Add(this.button4);
-            this.tabPage4.Controls.Add(this.cmbxFirstName);
-            this.tabPage4.Controls.Add(this.button3);
-            this.tabPage4.Controls.Add(this.dataGridViewShowroom);
-            this.tabPage4.Controls.Add(this.rbtnFac);
-            this.tabPage4.Controls.Add(this.rbtnStud);
-            this.tabPage4.Controls.Add(this.cmbxRoomNo);
-            this.tabPage4.Controls.Add(this.cmbxBuildingName);
-            this.tabPage4.Controls.Add(this.btnAdd_Allocation_Click);
-            this.tabPage4.Controls.Add(this.label17);
-            this.tabPage4.Controls.Add(this.label16);
-            this.tabPage4.Controls.Add(this.label15);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(858, 584);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Allocate Room";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabPage6.Controls.Add(this.button4);
+            this.tabPage6.Controls.Add(this.cmbxFirstName);
+            this.tabPage6.Controls.Add(this.button3);
+            this.tabPage6.Controls.Add(this.dataGridViewShowroom);
+            this.tabPage6.Controls.Add(this.rbtnFac);
+            this.tabPage6.Controls.Add(this.rbtnStud);
+            this.tabPage6.Controls.Add(this.cmbxRoomNo);
+            this.tabPage6.Controls.Add(this.cmbxBuildingName);
+            this.tabPage6.Controls.Add(this.btnAdd_Allocation_Click);
+            this.tabPage6.Controls.Add(this.label17);
+            this.tabPage6.Controls.Add(this.label16);
+            this.tabPage6.Controls.Add(this.label15);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(858, 584);
+            this.tabPage6.TabIndex = 3;
+            this.tabPage6.Text = "Allocate Room";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.button4.Location = new System.Drawing.Point(378, 134);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(68, 26);
+            this.button4.TabIndex = 21;
+            this.button4.Text = "Next";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // cmbxFirstName
             // 
@@ -700,6 +718,7 @@
             this.cmbxFirstName.Name = "cmbxFirstName";
             this.cmbxFirstName.Size = new System.Drawing.Size(187, 24);
             this.cmbxFirstName.TabIndex = 20;
+            this.cmbxFirstName.SelectedIndexChanged += new System.EventHandler(this.cmbxFirstName_SelectedIndexChanged);
             // 
             // button3
             // 
@@ -811,29 +830,71 @@
             this.label15.Text = "Name";
             this.label15.Click += new System.EventHandler(this.label15_Click);
             // 
-            // tabPage6
+            // label20
             // 
-            this.tabPage6.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage6.Controls.Add(this.btnToShowName);
-            this.tabPage6.Controls.Add(this.cmbx__FirstName);
-            this.tabPage6.Controls.Add(this.label19);
-            this.tabPage6.Controls.Add(this.btnAddElectiveSub);
-            this.tabPage6.Controls.Add(this.cmbxSem__Name);
-            this.tabPage6.Controls.Add(this.cmbxDept__Name);
-            this.tabPage6.Controls.Add(this.cmbxElecSub);
-            this.tabPage6.Controls.Add(this.label22);
-            this.tabPage6.Controls.Add(this.label21);
-            this.tabPage6.Controls.Add(this.label20);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(858, 584);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Subject Allocation";
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.label20.Location = new System.Drawing.Point(313, 56);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(98, 19);
+            this.label20.TabIndex = 5;
+            this.label20.Text = "Department";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.label21.Location = new System.Drawing.Point(313, 87);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(81, 19);
+            this.label21.TabIndex = 6;
+            this.label21.Text = "Semester";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.label22.Location = new System.Drawing.Point(304, 221);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(131, 19);
+            this.label22.TabIndex = 7;
+            this.label22.Text = "Elective Subject";
+            // 
+            // cmbxElecSub
+            // 
+            this.cmbxElecSub.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbxElecSub.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.cmbxElecSub.FormattingEnabled = true;
+            this.cmbxElecSub.Location = new System.Drawing.Point(450, 220);
+            this.cmbxElecSub.Name = "cmbxElecSub";
+            this.cmbxElecSub.Size = new System.Drawing.Size(158, 24);
+            this.cmbxElecSub.TabIndex = 8;
+            // 
+            // cmbxDept__Name
+            // 
+            this.cmbxDept__Name.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbxDept__Name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.cmbxDept__Name.FormattingEnabled = true;
+            this.cmbxDept__Name.Location = new System.Drawing.Point(450, 51);
+            this.cmbxDept__Name.Name = "cmbxDept__Name";
+            this.cmbxDept__Name.Size = new System.Drawing.Size(158, 24);
+            this.cmbxDept__Name.TabIndex = 10;
+            this.cmbxDept__Name.SelectedIndexChanged += new System.EventHandler(this.cmbxDept__Name_SelectedIndexChanged);
+            // 
+            // cmbxSem__Name
+            // 
+            this.cmbxSem__Name.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbxSem__Name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.cmbxSem__Name.FormattingEnabled = true;
+            this.cmbxSem__Name.Location = new System.Drawing.Point(450, 86);
+            this.cmbxSem__Name.Name = "cmbxSem__Name";
+            this.cmbxSem__Name.Size = new System.Drawing.Size(158, 24);
+            this.cmbxSem__Name.TabIndex = 11;
             // 
             // btnAddElectiveSub
             // 
             this.btnAddElectiveSub.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.btnAddElectiveSub.Location = new System.Drawing.Point(428, 254);
+            this.btnAddElectiveSub.Location = new System.Drawing.Point(540, 268);
             this.btnAddElectiveSub.Name = "btnAddElectiveSub";
             this.btnAddElectiveSub.Size = new System.Drawing.Size(68, 27);
             this.btnAddElectiveSub.TabIndex = 12;
@@ -841,107 +902,100 @@
             this.btnAddElectiveSub.UseVisualStyleBackColor = true;
             this.btnAddElectiveSub.Click += new System.EventHandler(this.btnAddElectiveSub_Click);
             // 
-            // cmbxSem__Name
+            // label19
             // 
-            this.cmbxSem__Name.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbxSem__Name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.cmbxSem__Name.FormattingEnabled = true;
-            this.cmbxSem__Name.Location = new System.Drawing.Point(337, 108);
-            this.cmbxSem__Name.Name = "cmbxSem__Name";
-            this.cmbxSem__Name.Size = new System.Drawing.Size(158, 24);
-            this.cmbxSem__Name.TabIndex = 11;
-            // 
-            // cmbxDept__Name
-            // 
-            this.cmbxDept__Name.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbxDept__Name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.cmbxDept__Name.FormattingEnabled = true;
-            this.cmbxDept__Name.Location = new System.Drawing.Point(338, 74);
-            this.cmbxDept__Name.Name = "cmbxDept__Name";
-            this.cmbxDept__Name.Size = new System.Drawing.Size(158, 24);
-            this.cmbxDept__Name.TabIndex = 10;
-            // 
-            // cmbxElecSub
-            // 
-            this.cmbxElecSub.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbxElecSub.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
-            this.cmbxElecSub.FormattingEnabled = true;
-            this.cmbxElecSub.Location = new System.Drawing.Point(337, 209);
-            this.cmbxElecSub.Name = "cmbxElecSub";
-            this.cmbxElecSub.Size = new System.Drawing.Size(158, 24);
-            this.cmbxElecSub.TabIndex = 8;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.label22.Location = new System.Drawing.Point(189, 214);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(131, 19);
-            this.label22.TabIndex = 7;
-            this.label22.Text = "Elective Subject";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.label21.Location = new System.Drawing.Point(190, 113);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(81, 19);
-            this.label21.TabIndex = 6;
-            this.label21.Text = "Semester";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.label20.Location = new System.Drawing.Point(189, 79);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(98, 19);
-            this.label20.TabIndex = 5;
-            this.label20.Text = "Department";
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(313, 181);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(53, 19);
+            this.label19.TabIndex = 16;
+            this.label19.Text = "Name";
             // 
             // cmbx__FirstName
             // 
             this.cmbx__FirstName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbx__FirstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.cmbx__FirstName.FormattingEnabled = true;
-            this.cmbx__FirstName.Location = new System.Drawing.Point(338, 179);
+            this.cmbx__FirstName.Location = new System.Drawing.Point(450, 176);
             this.cmbx__FirstName.Name = "cmbx__FirstName";
             this.cmbx__FirstName.Size = new System.Drawing.Size(158, 24);
             this.cmbx__FirstName.TabIndex = 17;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(190, 184);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(53, 19);
-            this.label19.TabIndex = 16;
-            this.label19.Text = "Name";
+            this.cmbx__FirstName.SelectedIndexChanged += new System.EventHandler(this.cmbx__FirstName_SelectedIndexChanged);
             // 
             // btnToShowName
             // 
             this.btnToShowName.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.btnToShowName.Location = new System.Drawing.Point(428, 138);
+            this.btnToShowName.Location = new System.Drawing.Point(532, 127);
             this.btnToShowName.Name = "btnToShowName";
-            this.btnToShowName.Size = new System.Drawing.Size(68, 26);
+            this.btnToShowName.Size = new System.Drawing.Size(76, 26);
             this.btnToShowName.TabIndex = 18;
             this.btnToShowName.Text = "Next";
             this.btnToShowName.UseVisualStyleBackColor = true;
             this.btnToShowName.Click += new System.EventHandler(this.btnToShowName_Click);
             // 
-            // button4
+            // tabPage5
             // 
-            this.button4.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.button4.Location = new System.Drawing.Point(378, 134);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(68, 26);
-            this.button4.TabIndex = 21;
-            this.button4.Text = "Next";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.tabPage5.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage5.Controls.Add(this.button5);
+            this.tabPage5.Controls.Add(this.dataGridView2);
+            this.tabPage5.Controls.Add(this.label23);
+            this.tabPage5.Controls.Add(this.btnAddNonElective);
+            this.tabPage5.Controls.Add(this.btnToShowName);
+            this.tabPage5.Controls.Add(this.cmbx__FirstName);
+            this.tabPage5.Controls.Add(this.label19);
+            this.tabPage5.Controls.Add(this.btnAddElectiveSub);
+            this.tabPage5.Controls.Add(this.cmbxSem__Name);
+            this.tabPage5.Controls.Add(this.cmbxDept__Name);
+            this.tabPage5.Controls.Add(this.cmbxElecSub);
+            this.tabPage5.Controls.Add(this.label22);
+            this.tabPage5.Controls.Add(this.label21);
+            this.tabPage5.Controls.Add(this.label20);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(858, 584);
+            this.tabPage5.TabIndex = 5;
+            this.tabPage5.Text = "Subject Allocation";
+            // 
+            // btnAddNonElective
+            // 
+            this.btnAddNonElective.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.btnAddNonElective.Location = new System.Drawing.Point(540, 318);
+            this.btnAddNonElective.Name = "btnAddNonElective";
+            this.btnAddNonElective.Size = new System.Drawing.Size(68, 27);
+            this.btnAddNonElective.TabIndex = 19;
+            this.btnAddNonElective.Text = "Add";
+            this.btnAddNonElective.UseVisualStyleBackColor = true;
+            this.btnAddNonElective.Click += new System.EventHandler(this.btnAddNonElective_Click);
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.label23.Location = new System.Drawing.Point(304, 326);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(215, 19);
+            this.label23.TabIndex = 20;
+            this.label23.Text = "Insert Non-Elective Subject";
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(15, 369);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.Size = new System.Drawing.Size(825, 179);
+            this.dataGridView2.TabIndex = 21;
+            // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.button5.Location = new System.Drawing.Point(397, 554);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(68, 27);
+            this.button5.TabIndex = 22;
+            this.button5.Text = "Show";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // clsPersonBindingSource1
             // 
@@ -972,14 +1026,15 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tabPage5.ResumeLayout(false);
-            this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSou)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShowroom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSou)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShowroom)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.clsPersonBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.clsPersonBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -999,8 +1054,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.RadioButton rbtnAdministrator;
         private System.Windows.Forms.RadioButton rbtnFaculty;
         private System.Windows.Forms.RadioButton rbtnStudent;
@@ -1050,19 +1105,23 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.DataGridView dataGridViewShowroom;
-        private System.Windows.Forms.TabPage tabPage6;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox cmbxFirstName;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Button btnToShowName;
+        private System.Windows.Forms.ComboBox cmbx__FirstName;
+        private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Button btnAddElectiveSub;
         private System.Windows.Forms.ComboBox cmbxSem__Name;
         private System.Windows.Forms.ComboBox cmbxDept__Name;
         private System.Windows.Forms.ComboBox cmbxElecSub;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.ComboBox cmbxFirstName;
-        private System.Windows.Forms.ComboBox cmbx__FirstName;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Button btnToShowName;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Button btnAddNonElective;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.DataGridView dataGridView2;
     }
 }
 
