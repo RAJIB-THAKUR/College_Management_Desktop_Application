@@ -49,6 +49,18 @@ namespace Tabwindowsform
         int return_person_ID2;
         int flag2=0;
         string subCodeSelected;
+
+        //Subject Allocation Tab Variables
+        string currDept;
+        string prevDept;
+        string currSem;
+        string prevSem;
+        int flagShowRoom=0;
+
+        //Subject De-Allocation Tab Variables
+        int currPersonId;
+        int prevPersonId;
+
         public Form1()
         {
             InitializeComponent();
@@ -69,6 +81,7 @@ namespace Tabwindowsform
                         depts.Add(dept);
                 });
             }
+            depts = depts.OrderBy(x => x.deptName).ToList();
             //-----Tab1 dept
             cmbxDeptName.DataSource = depts;
             cmbxDeptName.DisplayMember = "deptName";
@@ -83,8 +96,8 @@ namespace Tabwindowsform
             cmbxDept_Name.DataSource = depts;
             cmbxDept_Name.DisplayMember = "deptName";
             cmbxDept_Name.ValueMember = "dept_Id";
-
-            //-----Tab6 dept
+            
+            //-----Tab6 
             cmbxDept__Name.DataSource = depts;
             cmbxDept__Name.DisplayMember = "deptName";
             cmbxDept__Name.ValueMember = "dept_Id";
@@ -109,7 +122,7 @@ namespace Tabwindowsform
                         cities.Add(city);
                 });
             }
-
+            cities = cities.OrderBy(x => x.cityName).ToList();
             cmbxCity.DataSource = cities;
             cmbxCity.DisplayMember = "cityName";
             cmbxCity.ValueMember = "c_Id";
@@ -131,6 +144,7 @@ namespace Tabwindowsform
                         Sems.Add(sem);
                 });
             }
+            Sems = Sems.OrderBy(x => x.sem_Name).ToList();
             //Tab-3
             cmbSemester.DataSource = Sems;
             cmbSemester.DisplayMember = "sem_Name";
@@ -262,7 +276,10 @@ namespace Tabwindowsform
             //----Person Table-----
             string query;
             //query = "select * from Address inner join Person on Address.person_Id=Person.person_Id inner join City on City.c_ID=Address.c_Id left join Department on Department.dept_Id = Person.dept_Id; ";
-            query = "select * from Person inner join Address on Address.person_Id=Person.person_Id inner join City on City.c_ID=Address.c_Id left join Department on Department.dept_Id = Person.dept_Id; ";
+            query = "select * from Person " +
+                "inner join Address on Address.person_Id=Person.person_Id " +
+                "inner join City on City.c_ID=Address.c_Id " +
+                "left join Department on Department.dept_Id = Person.dept_Id;";
             DataSet dsData = clsSQLWrapper.runUserQuery(query);
 
             List<Model.clsPerson> persons = new List<Model.clsPerson>();
@@ -493,11 +510,15 @@ namespace Tabwindowsform
        
         private void rbtnStud_CheckedChanged(object sender, EventArgs e)
         {
-
+            dataGridViewShowroom.DataSource = null;
+            dataGridViewShowroom.Rows.Clear();
             //---------------------FirstName FROM Person Table
 
-            DataSet ds6 = clsSQLWrapper.runUserQuery("Select * from Person where type='Student';");
-
+            //DataSet ds6 = clsSQLWrapper.runUserQuery("Select * from Person where type='Student';");
+            string query = "Select * from Person " +
+                "where type='Student' " +
+                "and NOT exists(select id from Hostel where Hostel.id=Person.person_Id);";
+            DataSet ds6 = clsSQLWrapper.runUserQuery(query);
             List<Model.clsPerson> persons = new List<Model.clsPerson>();
             if (ds6 != null && ds6.Tables[0].Rows.Count > 0)
             {
@@ -512,7 +533,7 @@ namespace Tabwindowsform
                 });
             }
             
-            cmbxFirstName.DataSource = persons;
+            cmbxFirstName.DataSource = persons.OrderBy(x => x.FirstName).ToList();
             cmbxFirstName.DisplayMember = "firstName";
             cmbxFirstName.ValueMember = "firstName";
 
@@ -535,6 +556,7 @@ namespace Tabwindowsform
             }
 
             List<string> buildingNameHostel = Hostels.Select(s => s.Building_Name).Distinct().ToList();
+            buildingNameHostel.Sort();
             cmbxBuildingName.DataSource = buildingNameHostel;
 
         }
@@ -542,10 +564,14 @@ namespace Tabwindowsform
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
+            dataGridViewShowroom.DataSource = null;
+            dataGridViewShowroom.Rows.Clear();
             //---------------------FirstName FROM Person Table
-
-            DataSet ds6 = clsSQLWrapper.runUserQuery("Select * from Person where type='Faculty';");
-
+            string query = "Select * from Person " +
+                "where type='Faculty' " +
+                "and NOT exists(select id from FacultyRoom where FacultyRoom.id=Person.person_Id);";
+            //DataSet ds6 = clsSQLWrapper.runUserQuery("Select * from Person where type='Faculty';");
+            DataSet ds6 = clsSQLWrapper.runUserQuery(query);
             List<Model.clsPerson> persons = new List<Model.clsPerson>();
             if (ds6 != null && ds6.Tables[0].Rows.Count > 0)
             {
@@ -559,7 +585,7 @@ namespace Tabwindowsform
                 });
             }
 
-            cmbxFirstName.DataSource = persons;
+            cmbxFirstName.DataSource = persons.OrderBy(x => x.FirstName).ToList();
             cmbxFirstName.DisplayMember = "firstName";
             cmbxFirstName.ValueMember = "firstName";
 
@@ -581,6 +607,7 @@ namespace Tabwindowsform
                 });
             }
             List<string> buildingNameFaculty = Faculties.Select(s => s.Building_Name).Distinct().ToList();
+            buildingNameFaculty.Sort();
             cmbxBuildingName.DataSource = buildingNameFaculty;
 
             //----------------------
@@ -595,7 +622,9 @@ namespace Tabwindowsform
             //----Subject Table-----
             string QueryForSubject;
 
-            QueryForSubject = "Select sub_code,Department.dept_Id,sub_name,deptName,sem_Name,isElective,isCommonForAll from Subject inner join Department on Subject.dept_Id = Department.dept_Id inner join Semester on Subject.sem_id = Semester.sem_id;";
+            QueryForSubject = "Select sub_code,Department.dept_Id,sub_name,deptName,sem_Name,isElective,isCommonForAll " +
+                "from Subject inner join Department on Subject.dept_Id = Department.dept_Id " +
+                "inner join Semester on Subject.sem_id = Semester.sem_id;";
 
             DataSet dsData2 = clsSQLWrapper.runUserQuery(QueryForSubject);
 
@@ -623,7 +652,7 @@ namespace Tabwindowsform
                     subject.Add(sub);
             });
             
-            dataGridViewSou.DataSource = subject/*.OrderBy(x=>x.dept_Id)*/;
+            dataGridViewSou.DataSource = subject.OrderBy(x => x.sub_dept_name).ToList(); ;
 
         }
 
@@ -683,7 +712,7 @@ namespace Tabwindowsform
                     subject.Add(sub);
             });
 
-            dataGridViewSou.DataSource = subject;
+            dataGridViewSou.DataSource = subject.OrderBy(x => x.sub_name).ToList(); ;
 
         }
 
@@ -703,6 +732,7 @@ namespace Tabwindowsform
 
         private void button3_Click(object sender, EventArgs e)
         {
+            flagShowRoom = 0;
             if (rbtnStud.Checked)
                 funcDisplayHostelRoom();
             else if (rbtnFac.Checked)
@@ -717,7 +747,8 @@ namespace Tabwindowsform
             //----Hostel Table-----
             string QueryForHostelDetails;
 
-            QueryForHostelDetails = "Select id,firstName,lastName,BuildingName,RoomNumber,AllocatedTo from Hostel inner join Person on Hostel.id = Person.person_Id;";
+            QueryForHostelDetails = "Select id,firstName,lastName,BuildingName,RoomNumber,AllocatedTo " +
+                "from Hostel inner join Person on Hostel.id = Person.person_Id;";
 
             DataSet dsData2 = clsSQLWrapper.runUserQuery(QueryForHostelDetails);
 
@@ -740,15 +771,19 @@ namespace Tabwindowsform
                 lock (lstHostel)
                     lstHostel.Add(Hostel);
             });
+            if(flagShowRoom == 0)
+                dataGridViewShowroom.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
+            else
+            dataGridView3.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
 
-            dataGridViewShowroom.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
         }
         public void funcDisplayFacultylRoom()
         {
             //----Facullty Table-----
             string QueryForHostelDetails;
 
-            QueryForHostelDetails = "Select Id,firstName,lastName,BuildingName,RoomNumber,AllocatedTo from FacultyRoom inner join Person on FacultyRoom.id = Person.person_Id;";
+            QueryForHostelDetails = "Select Id,firstName,lastName,BuildingName,RoomNumber,AllocatedTo " +
+                "from FacultyRoom inner join Person on FacultyRoom.id = Person.person_Id;";
 
             DataSet dsData2 = clsSQLWrapper.runUserQuery(QueryForHostelDetails);
 
@@ -771,8 +806,10 @@ namespace Tabwindowsform
                 lock (lstHostel)
                     lstHostel.Add(Hostel);
             });
-
-            dataGridViewShowroom.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
+            if (flagShowRoom == 0)
+                dataGridViewShowroom.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
+            else
+            dataGridView3.DataSource = lstHostel.OrderBy(x => x.Person_Id).ToList();
         }
 
         private void label19_Click(object sender, EventArgs e)
@@ -782,14 +819,15 @@ namespace Tabwindowsform
 
         private void btnAddElectiveSub_Click(object sender, EventArgs e)
         {
-            //string subcode = cmbxElecSub.SelectedValue.ToString();
-            //int personID= Convert.ToInt32(cmbx__FirstName.SelectedValue);
-            //int intSelectedDept = Convert.ToInt32(cmbxDept_Name.SelectedValue);
-            
- 
+            //Dept and Sem value while clicking Elective Add button 
+            currDept = cmbxDept__Name.SelectedValue.ToString();
+            currSem = cmbxSem__Name.SelectedValue.ToString();
+            if (currDept == prevDept && currSem == prevSem)
+            {
+
                 if (clsSQLWrapper.s_blnHasConnection())
                 {
-                    string query = "Insert_Elective_Subject"; //string deptName = cmbxDeptName.SelectedItem.ToString();
+                    string query = "Insert_Elective_Subject";
                     List<SqlParameter> lstSPara = new List<SqlParameter>();
                     lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
                     lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = cmbxElecSub.SelectedValue });
@@ -805,6 +843,11 @@ namespace Tabwindowsform
                         MessageBox.Show("Elective Subject added Successfully for the person");
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
+            }
         }
 
         private void txtName_TextChanged(object sender, EventArgs e)
@@ -824,6 +867,17 @@ namespace Tabwindowsform
 
         private void btnToShowName_Click(object sender, EventArgs e)
         {
+            //Dept and Sem value while clicking Next button
+            prevDept = cmbxDept__Name.SelectedValue.ToString();
+            prevSem = cmbxSem__Name.SelectedValue.ToString();
+
+            if (currDept != prevDept || currSem != prevSem)
+            {
+                //Clear DataGridView
+                dataGridView2.DataSource = null;
+                dataGridView2.Rows.Clear();
+            }
+
             //---------------------FirstName FROM Person Table for Subject Allocation
             if (clsSQLWrapper.s_blnHasConnection())
             {
@@ -850,7 +904,7 @@ namespace Tabwindowsform
                     });
                 }
 
-                cmbx__FirstName.DataSource = persons;
+                cmbx__FirstName.DataSource = persons.OrderBy(x=>x.FirstName).ToList();
                 cmbx__FirstName.DisplayMember = "firstName";
                 cmbx__FirstName.ValueMember = "person_Id";
           
@@ -878,7 +932,7 @@ namespace Tabwindowsform
                     });
                 }
 
-                cmbxElecSub.DataSource = Subjects;
+                cmbxElecSub.DataSource = Subjects.OrderBy(x => x.sub_name).ToList(); ;
                 cmbxElecSub.DisplayMember = "sub_name";
                 cmbxElecSub.ValueMember = "sub_code";
             }
@@ -914,7 +968,7 @@ namespace Tabwindowsform
                     }
 
 
-                    cmbxRoomNo.DataSource = Hostels;
+                    cmbxRoomNo.DataSource = Hostels.OrderBy(x=>x.Room_No).ToList();
                     cmbxRoomNo.DisplayMember = "Room_No";
                     cmbxRoomNo.ValueMember = "Room_No";
                 }
@@ -942,7 +996,7 @@ namespace Tabwindowsform
                     }
 
 
-                    cmbxRoomNo.DataSource = faculties;
+                    cmbxRoomNo.DataSource = faculties.OrderBy(x => x.Room_No).ToList();
                     cmbxRoomNo.DisplayMember = "Room_No";
                     cmbxRoomNo.ValueMember = "Room_No";
                 }
@@ -962,35 +1016,46 @@ namespace Tabwindowsform
 
         private void btnAddNonElective_Click(object sender, EventArgs e)
         {
-            List<SqlParameter> lstPara = new List<SqlParameter>();
-            lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
-            lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = cmbxSem__Name.SelectedValue });
-
-            string query = "sp_Non_Elective_subCode_WRT_Dept_Sem";
-            DataSet dsData = clsSQLWrapper.runProcedureUser(query, lstPara);
-            int checkIfExist=1;
-            foreach (DataRow dr in dsData.Tables[0].Rows)
+            //Dept and Sem value while clicking Non-Elective Add button 
+            currDept = cmbxDept__Name.SelectedValue.ToString();
+            currSem = cmbxSem__Name.SelectedValue.ToString();
+            if(currDept==prevDept && currSem==prevSem)
             {
-                string toInsert_Sub_code = (string)dr[0];
-                string query2 = "Insert_non_Elective_Subject"; 
-                List<SqlParameter> lstSPara = new List<SqlParameter>();
-                lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
-                lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = toInsert_Sub_code });
+                List<SqlParameter> lstPara = new List<SqlParameter>();
+                lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
+                lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = cmbxSem__Name.SelectedValue });
 
-                //Checks If Elective subject already alloted to the person
-                if (checkIfExist == 1)
-                    checkIfExist = clsSQLWrapper.runProcedure(query2, lstSPara);
+                string query = "sp_Non_Elective_subCode_WRT_Dept_Sem";
+                DataSet dsData = clsSQLWrapper.runProcedureUser(query, lstPara);
+                int checkIfExist = 1;
+                foreach (DataRow dr in dsData.Tables[0].Rows)
+                {
+                    string toInsert_Sub_code = (string)dr[0];
+                    string query2 = "Insert_non_Elective_Subject";
+                    List<SqlParameter> lstSPara = new List<SqlParameter>();
+                    lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+                    lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = toInsert_Sub_code });
+
+                    //Checks If Elective subject already alloted to the person
+                    if (checkIfExist == 1)
+                        checkIfExist = clsSQLWrapper.runProcedure(query2, lstSPara);
+                    else
+                        break;
+                }
+                if (checkIfExist == 0)
+                {
+                    MessageBox.Show("Non-Elective Subjects already added");
+                }
                 else
-                    break;
-            }
-            if(checkIfExist == 0)
-            {
-                MessageBox.Show("Non-Elective Subjects already added");
+                {
+                    MessageBox.Show("Non-Elective Subjects succesfully added");
+                }
             }
             else
             {
-                MessageBox.Show("Non-Elective Subjects succesfully added");
+                MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
             }
+
 
         }
 
@@ -1005,45 +1070,54 @@ namespace Tabwindowsform
         }
         public void funcDisplay_person_Sub()
         {
-            int intSelectedDept = Convert.ToInt32(cmbxDept__Name.SelectedValue);
-            int intSelectedSem = Convert.ToInt32(cmbxSem__Name.SelectedValue);
-            string QueryForPersonSubject;
-
-            QueryForPersonSubject = "sp_Select_Person_Sub";
-
-            List<SqlParameter> lstPara = new List<SqlParameter>();
-            lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = intSelectedDept });
-            lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = intSelectedSem });
-            lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
-
-            DataSet dsData2 = clsSQLWrapper.runProcedureUser(QueryForPersonSubject, lstPara);
-
-            List<Model.clsSubject> subject = new List<Model.clsSubject>();
-            Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+            //Dept and Sem value while clicking Show button 
+            currDept = cmbxDept__Name.SelectedValue.ToString();
+            currSem = cmbxSem__Name.SelectedValue.ToString();
+            if (currDept == prevDept && currSem == prevSem)
             {
-                Model.clsPerson person1 = new Model.clsPerson();
-                Model.clsDepartment dept1 = new Model.clsDepartment();
-                Model.clsSubject sub = new Model.clsSubject();
-                Model.clsSemester semester = new Model.clsSemester();
-                Model.clsStudySub subStudy = new Model.clsStudySub();
+                int intSelectedDept = Convert.ToInt32(cmbxDept__Name.SelectedValue);
+                int intSelectedSem = Convert.ToInt32(cmbxSem__Name.SelectedValue);
+                string QueryForPersonSubject;
 
-                dept1.deptName = dsData2.Tables[0].Rows[i]["deptName"].ToString();
-                sub.sub_dept_name = dept1.deptName;
-                sub.sub_code = dsData2.Tables[0].Rows[i]["sub_code"].ToString();
-                sub.sub_name = dsData2.Tables[0].Rows[i]["sub_name"].ToString();
+                QueryForPersonSubject = "sp_Select_Person_Sub";
 
-                sub.isElective = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isElective"]);
-                semester.sem_Name = dsData2.Tables[0].Rows[i]["sem_Name"].ToString();
-                sub.isCommonForAll = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isCommonForAll"]);
-                sub.sub_sem_name = semester.sem_Name;
+                List<SqlParameter> lstPara = new List<SqlParameter>();
+                lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = intSelectedDept });
+                lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = intSelectedSem });
+                lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+
+                DataSet dsData2 = clsSQLWrapper.runProcedureUser(QueryForPersonSubject, lstPara);
+
+                List<Model.clsSubject> subject = new List<Model.clsSubject>();
+                Parallel.For(0, dsData2.Tables[0].Rows.Count, i =>
+                {
+                    Model.clsPerson person1 = new Model.clsPerson();
+                    Model.clsDepartment dept1 = new Model.clsDepartment();
+                    Model.clsSubject sub = new Model.clsSubject();
+                    Model.clsSemester semester = new Model.clsSemester();
+                    Model.clsStudySub subStudy = new Model.clsStudySub();
+
+                    dept1.deptName = dsData2.Tables[0].Rows[i]["deptName"].ToString();
+                    sub.sub_dept_name = dept1.deptName;
+                    sub.sub_code = dsData2.Tables[0].Rows[i]["sub_code"].ToString();
+                    sub.sub_name = dsData2.Tables[0].Rows[i]["sub_name"].ToString();
+
+                    sub.isElective = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isElective"]);
+                    semester.sem_Name = dsData2.Tables[0].Rows[i]["sem_Name"].ToString();
+                    sub.isCommonForAll = Convert.ToBoolean(dsData2.Tables[0].Rows[i]["isCommonForAll"]);
+                    sub.sub_sem_name = semester.sem_Name;
 
 
-                lock (subject)
-                    subject.Add(sub);
-            });
+                    lock (subject)
+                        subject.Add(sub);
+                });
 
-            dataGridView2.DataSource = subject;
-
+                dataGridView2.DataSource = subject;
+            }
+            else
+            {
+                MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
+            }
         }
 
         private void txtMobile_TextChanged(object sender, EventArgs e)
@@ -1053,6 +1127,125 @@ namespace Tabwindowsform
                 MessageBox.Show("Please enter only numbers.");
                 txtMobile.Text = txtMobile.Text.Remove(txtMobile.Text.Length - 1);
             }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGridView3.DataSource = null;
+            dataGridView3.Rows.Clear();
+
+            //---------------------FirstName FROM Person Table
+            string query = "Select * from Person " +
+                "where type='Student' " +
+                "and exists(select id from Hostel where Hostel.id=Person.person_Id);";
+            DataSet ds6 = clsSQLWrapper.runUserQuery(query);
+            List<Model.clsPerson> persons = new List<Model.clsPerson>();
+            if (ds6 != null && ds6.Tables[0].Rows.Count > 0)
+            {
+
+                Parallel.For(0, ds6.Tables[0].Rows.Count, i =>
+                {
+                    Model.clsPerson person = new Model.clsPerson();
+                    person.FirstName = ds6.Tables[0].Rows[i]["firstName"].ToString();
+                    person.person_Id = Convert.ToInt32(ds6.Tables[0].Rows[i]["person_Id"]);
+
+                    lock (persons)
+                        persons.Add(person);
+                });
+            }
+
+            cmbxDeAll_FirstName.DataSource = persons.OrderBy(x => x.FirstName).ToList();
+            cmbxDeAll_FirstName.DisplayMember = "firstName";
+            cmbxDeAll_FirstName.ValueMember = "person_Id";
+
+        }
+
+        private void rbtnFaculty2_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGridView3.DataSource = null;
+            dataGridView3.Rows.Clear();
+            //---------------------FirstName FROM Person Table
+            string query = "Select * from Person " +
+                "where type='Faculty' " +
+                "and exists(select id from FacultyRoom where FacultyRoom.id=Person.person_Id);";
+
+
+            DataSet ds6 = clsSQLWrapper.runUserQuery(query);
+            List<Model.clsPerson> persons = new List<Model.clsPerson>();
+            if (ds6 != null && ds6.Tables[0].Rows.Count > 0)
+            {
+
+                Parallel.For(0, ds6.Tables[0].Rows.Count, i =>
+                {
+                    Model.clsPerson person = new Model.clsPerson();
+                    person.FirstName = ds6.Tables[0].Rows[i]["firstName"].ToString();
+                    person.person_Id = Convert.ToInt32(ds6.Tables[0].Rows[i]["person_Id"]);
+                    lock (persons)
+                        persons.Add(person);
+                });
+            }
+
+            cmbxDeAll_FirstName.DataSource = persons.OrderBy(x => x.FirstName).ToList();
+            cmbxDeAll_FirstName.DisplayMember = "firstName";
+            cmbxDeAll_FirstName.ValueMember = "person_Id";
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            flagShowRoom = 1;
+            if (rbtnStudent2.Checked)
+                funcDisplayHostelRoom();
+            else if (rbtnFaculty2.Checked)
+                funcDisplayFacultylRoom();
+            else
+            {
+                MessageBox.Show("Select \"Student\" or \"Faculty\"");
+            }
+        }
+
+        private void btn_Deallocate_Click(object sender, EventArgs e)
+        {
+
+            if (rbtnStudent2.Checked || rbtnFaculty2.Checked)
+            {
+                currPersonId = Convert.ToInt32(cmbxDeAll_FirstName.SelectedValue);
+                if (currPersonId != prevPersonId)
+                {
+                    string query = "";
+
+                    List<SqlParameter> lstPara = new List<SqlParameter>();
+                    lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.Int, Value = cmbxDeAll_FirstName.SelectedValue });
+                    if (rbtnStudent2.Checked)
+                    {
+                        query = "sp_Deallocate_Hostel";
+                    }
+                    else if (rbtnFaculty2.Checked)
+                    {
+                        query = "sp_Deallocate_Faculty";
+                    }
+                    DataSet dsData2 = clsSQLWrapper.runProcedureUser(query, lstPara);
+                    if (dsData2 != null)
+                    {
+                        MessageBox.Show("De-Allocation Successful");
+                        prevPersonId = Convert.ToInt32(cmbxDeAll_FirstName.SelectedValue);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Person Already De_Allocated\nClick Faculty and then Student to refresh");
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Select \"Student\" or \"Faculty\"");
+            }
+
+            }
+
+        private void tabPage7_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
