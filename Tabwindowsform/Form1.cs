@@ -45,10 +45,13 @@ namespace Tabwindowsform
         string currBuildingName;
         string prevBuildingName;
 
+        int flagNext_Room_Allocation = 0;
+
         //ELECTIVE subject Allocation Variables
         int return_person_ID2;
         int flag2=0;
         string subCodeSelected;
+        int flagNext_Subject_Allocation = 0;
 
         //Subject Allocation Tab Variables
         string currDept;
@@ -424,86 +427,94 @@ namespace Tabwindowsform
         //ADD button of room allocation
         private void button1_Click(object sender, EventArgs e)
         {
-            currBuildingName= cmbxBuildingName.SelectedItem.ToString();
-            if (currBuildingName == prevBuildingName)
-            { 
-                buildingName = currBuildingName;
-                Name = cmbxFirstName.SelectedItem.ToString();
+            if (flagNext_Room_Allocation == 1)
+            {
 
-                //--------------------Allocate_Hostel------------------------------
-
-                if (cmbxFirstName.SelectedValue != null && cmbxBuildingName.SelectedValue != null && cmbxRoomNo.SelectedValue != null)
+                currBuildingName = cmbxBuildingName.SelectedItem.ToString();
+                if (currBuildingName == prevBuildingName)
                 {
+                    buildingName = currBuildingName;
+                    Name = cmbxFirstName.SelectedItem.ToString();
 
-                    if (clsSQLWrapper.s_blnHasConnection())
-                    {
-                        if (rbtnStud.Checked)
-                            Type1 = "Student";
-                        else if (rbtnFac.Checked)
-                            Type1 = "Faculty";
-                        List<SqlParameter> lstPara = new List<SqlParameter>();
-                        lstPara.Add(new SqlParameter { ParameterName = "@Name", SqlDbType = SqlDbType.VarChar, Value = cmbxFirstName.SelectedValue });
-                        lstPara.Add(new SqlParameter { ParameterName = "@Type", SqlDbType = SqlDbType.VarChar, Value = Type1 });
-                        return_person_ID = clsSQLWrapper.runProcedure("Return_Person_Id", lstPara);
+                    //--------------------Allocate_Hostel------------------------------
 
-                    }
-                    if (return_person_ID != 0)
+                    if (cmbxFirstName.SelectedValue != null && cmbxBuildingName.SelectedValue != null && cmbxRoomNo.SelectedValue != null)
                     {
 
                         if (clsSQLWrapper.s_blnHasConnection())
                         {
-
-                            List<SqlParameter> lstPara = new List<SqlParameter>();
-                            lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.VarChar, Value = return_person_ID });
-                            lstPara.Add(new SqlParameter { ParameterName = "@Building_Name", SqlDbType = SqlDbType.VarChar, Value = cmbxBuildingName.SelectedValue });
-                            lstPara.Add(new SqlParameter { ParameterName = "@RoomNo", SqlDbType = SqlDbType.Int, Value = cmbxRoomNo.SelectedValue });
-
-                            List<SqlParameter> lst_Para = new List<SqlParameter>();
-                            lst_Para.Add(new SqlParameter { ParameterName = "@Search_Id", SqlDbType = SqlDbType.Int, Value = return_person_ID });
-                            int flag;
                             if (rbtnStud.Checked)
-                            {
-                                flag = clsSQLWrapper.runProcedure("spCheckId_in_Hostel", lst_Para);
-                                //when person_Id doesn't exist in Hostel
-                                if (flag == 0)
-                                {
-                                    clsSQLWrapper.runProcedure("Insert_Hostel", lstPara);
-                                    MessageBox.Show("Room Allocation Successful");
-                                }
-
-                                else
-                                {
-                                    MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
-                                }
-
-                            }
-
+                                Type1 = "Student";
                             else if (rbtnFac.Checked)
+                                Type1 = "Faculty";
+                            List<SqlParameter> lstPara = new List<SqlParameter>();
+                            lstPara.Add(new SqlParameter { ParameterName = "@Name", SqlDbType = SqlDbType.VarChar, Value = cmbxFirstName.SelectedValue });
+                            lstPara.Add(new SqlParameter { ParameterName = "@Type", SqlDbType = SqlDbType.VarChar, Value = Type1 });
+                            return_person_ID = clsSQLWrapper.runProcedure("Return_Person_Id", lstPara);
+
+                        }
+                        if (return_person_ID != 0)
+                        {
+
+                            if (clsSQLWrapper.s_blnHasConnection())
                             {
-                                flag = clsSQLWrapper.runProcedure("spCheckId_in_Faculty", lst_Para);
-                                //when person_Id doesn't exist in Faculty
-                                if (flag == 0)
+
+                                List<SqlParameter> lstPara = new List<SqlParameter>();
+                                lstPara.Add(new SqlParameter { ParameterName = "@Person_Id", SqlDbType = SqlDbType.VarChar, Value = return_person_ID });
+                                lstPara.Add(new SqlParameter { ParameterName = "@Building_Name", SqlDbType = SqlDbType.VarChar, Value = cmbxBuildingName.SelectedValue });
+                                lstPara.Add(new SqlParameter { ParameterName = "@RoomNo", SqlDbType = SqlDbType.Int, Value = cmbxRoomNo.SelectedValue });
+
+                                List<SqlParameter> lst_Para = new List<SqlParameter>();
+                                lst_Para.Add(new SqlParameter { ParameterName = "@Search_Id", SqlDbType = SqlDbType.Int, Value = return_person_ID });
+                                int flag;
+                                if (rbtnStud.Checked)
                                 {
-                                    clsSQLWrapper.runProcedure("Insert_Faculty", lstPara);
-                                    MessageBox.Show("Room Allocation Successful");
+                                    flag = clsSQLWrapper.runProcedure("spCheckId_in_Hostel", lst_Para);
+                                    //when person_Id doesn't exist in Hostel
+                                    if (flag == 0)
+                                    {
+                                        clsSQLWrapper.runProcedure("Insert_Hostel", lstPara);
+                                        MessageBox.Show("Room Allocation Successful");
+                                    }
+
+                                    else
+                                    {
+                                        MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
+                                    }
+
                                 }
-                                else
+
+                                else if (rbtnFac.Checked)
                                 {
-                                    MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
-                            
+                                    flag = clsSQLWrapper.runProcedure("spCheckId_in_Faculty", lst_Para);
+                                    //when person_Id doesn't exist in Faculty
+                                    if (flag == 0)
+                                    {
+                                        clsSQLWrapper.runProcedure("Insert_Faculty", lstPara);
+                                        MessageBox.Show("Room Allocation Successful");
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Room Already Allocated for selected person\nSelect New Person");
+
+                                    }
                                 }
                             }
                         }
                     }
+                    else
+                    {
+                        MessageBox.Show("Incomplete Details");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Incomplete Details");
+                    MessageBox.Show("You have changed your Building Name \nClick Next to refresh and Try Again");
                 }
             }
             else
             {
-                MessageBox.Show("You have changed your Building Name \nClick Next to refresh and Try Again");
+                MessageBox.Show("Room No. not selected\nClick Next first and proceed");
             }
         }
 
@@ -819,35 +830,43 @@ namespace Tabwindowsform
 
         private void btnAddElectiveSub_Click(object sender, EventArgs e)
         {
-            //Dept and Sem value while clicking Elective Add button 
-            currDept = cmbxDept__Name.SelectedValue.ToString();
-            currSem = cmbxSem__Name.SelectedValue.ToString();
-            if (currDept == prevDept && currSem == prevSem)
+            if(flagNext_Subject_Allocation == 1)
             {
-
-                if (clsSQLWrapper.s_blnHasConnection())
+                //Dept and Sem value while clicking Elective Add button 
+                currDept = cmbxDept__Name.SelectedValue.ToString();
+                currSem = cmbxSem__Name.SelectedValue.ToString();
+                if (currDept == prevDept && currSem == prevSem)
                 {
-                    string query = "Insert_Elective_Subject";
-                    List<SqlParameter> lstSPara = new List<SqlParameter>();
-                    lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
-                    lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = cmbxElecSub.SelectedValue });
 
-                    //Checks If Elective subject already alloted to the person
-                    int checkIfExist = clsSQLWrapper.runProcedure(query, lstSPara);
-                    if (checkIfExist == 0)
+                    if (clsSQLWrapper.s_blnHasConnection())
                     {
-                        MessageBox.Show("Elective Subject already added for the person");
+                        string query = "Insert_Elective_Subject";
+                        List<SqlParameter> lstSPara = new List<SqlParameter>();
+                        lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+                        lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = cmbxElecSub.SelectedValue });
+
+                        //Checks If Elective subject already alloted to the person
+                        int checkIfExist = clsSQLWrapper.runProcedure(query, lstSPara);
+                        if (checkIfExist == 0)
+                        {
+                            MessageBox.Show("Elective Subject already added for the person");
+                        }
+                        else if (checkIfExist == 1)
+                        {
+                            MessageBox.Show("Elective Subject added Successfully for the person");
+                        }
                     }
-                    else if (checkIfExist == 1)
-                    {
-                        MessageBox.Show("Elective Subject added Successfully for the person");
-                    }
+                }
+                else
+                {
+                    MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
                 }
             }
             else
             {
-                MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
+                MessageBox.Show("Student not selected\nClick Next first and proceed");
             }
+            
         }
 
         private void txtName_TextChanged(object sender, EventArgs e)
@@ -935,12 +954,15 @@ namespace Tabwindowsform
                 cmbxElecSub.DataSource = Subjects.OrderBy(x => x.sub_name).ToList(); ;
                 cmbxElecSub.DisplayMember = "sub_name";
                 cmbxElecSub.ValueMember = "sub_code";
+
+                //To represent that next has been clicked
+                flagNext_Subject_Allocation = 1;
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            flag = 1;
+            
             prevBuildingName = cmbxBuildingName.SelectedValue.ToString();
             if (clsSQLWrapper.s_blnHasConnection())
             {
@@ -1000,8 +1022,9 @@ namespace Tabwindowsform
                     cmbxRoomNo.DisplayMember = "Room_No";
                     cmbxRoomNo.ValueMember = "Room_No";
                 }
-
-            } 
+                flagNext_Room_Allocation = 1;
+            }
+            
         }
 
         private void cmbx__FirstName_SelectedIndexChanged(object sender, EventArgs e)
@@ -1016,46 +1039,52 @@ namespace Tabwindowsform
 
         private void btnAddNonElective_Click(object sender, EventArgs e)
         {
-            //Dept and Sem value while clicking Non-Elective Add button 
-            currDept = cmbxDept__Name.SelectedValue.ToString();
-            currSem = cmbxSem__Name.SelectedValue.ToString();
-            if(currDept==prevDept && currSem==prevSem)
+            if (flagNext_Subject_Allocation == 1)
             {
-                List<SqlParameter> lstPara = new List<SqlParameter>();
-                lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
-                lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = cmbxSem__Name.SelectedValue });
-
-                string query = "sp_Non_Elective_subCode_WRT_Dept_Sem";
-                DataSet dsData = clsSQLWrapper.runProcedureUser(query, lstPara);
-                int checkIfExist = 1;
-                foreach (DataRow dr in dsData.Tables[0].Rows)
+                //Dept and Sem value while clicking Non-Elective Add button 
+                currDept = cmbxDept__Name.SelectedValue.ToString();
+                currSem = cmbxSem__Name.SelectedValue.ToString();
+                if (currDept == prevDept && currSem == prevSem)
                 {
-                    string toInsert_Sub_code = (string)dr[0];
-                    string query2 = "Insert_non_Elective_Subject";
-                    List<SqlParameter> lstSPara = new List<SqlParameter>();
-                    lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
-                    lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = toInsert_Sub_code });
+                    List<SqlParameter> lstPara = new List<SqlParameter>();
+                    lstPara.Add(new SqlParameter { ParameterName = "@Dept_Id", SqlDbType = SqlDbType.Int, Value = cmbxDept__Name.SelectedValue });
+                    lstPara.Add(new SqlParameter { ParameterName = "@Sem_Id", SqlDbType = SqlDbType.Int, Value = cmbxSem__Name.SelectedValue });
 
-                    //Checks If Elective subject already alloted to the person
-                    if (checkIfExist == 1)
-                        checkIfExist = clsSQLWrapper.runProcedure(query2, lstSPara);
+                    string query = "sp_Non_Elective_subCode_WRT_Dept_Sem";
+                    DataSet dsData = clsSQLWrapper.runProcedureUser(query, lstPara);
+                    int checkIfExist = 1;
+                    foreach (DataRow dr in dsData.Tables[0].Rows)
+                    {
+                        string toInsert_Sub_code = (string)dr[0];
+                        string query2 = "Insert_non_Elective_Subject";
+                        List<SqlParameter> lstSPara = new List<SqlParameter>();
+                        lstSPara.Add(new SqlParameter { ParameterName = "@person_ID", SqlDbType = SqlDbType.Int, Value = cmbx__FirstName.SelectedValue });
+                        lstSPara.Add(new SqlParameter { ParameterName = "@sub_code", SqlDbType = SqlDbType.VarChar, Value = toInsert_Sub_code });
+
+                        //Checks If Elective subject already alloted to the person
+                        if (checkIfExist == 1)
+                            checkIfExist = clsSQLWrapper.runProcedure(query2, lstSPara);
+                        else
+                            break;
+                    }
+                    if (checkIfExist == 0)
+                    {
+                        MessageBox.Show("Non-Elective Subjects already added");
+                    }
                     else
-                        break;
-                }
-                if (checkIfExist == 0)
-                {
-                    MessageBox.Show("Non-Elective Subjects already added");
+                    {
+                        MessageBox.Show("Non-Elective Subjects succesfully added");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Non-Elective Subjects succesfully added");
+                    MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
                 }
             }
             else
             {
-                MessageBox.Show("You have changed your Dept or Sem \nClick Next to refresh and Try Again");
+                MessageBox.Show("Student not selected\nClick Next first and proceed");
             }
-
 
         }
 
