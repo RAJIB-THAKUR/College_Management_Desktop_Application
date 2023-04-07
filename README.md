@@ -2,10 +2,16 @@
 Desktop Application for University Management System
 ---------------------------------------------------------------------------------------------
 #SKILLS
+
 #.NET Framework
+
 #SQL Server
+
 #C-Sharp Programming Lanuguage
+
 #ADO.NET
+
 #Backend web Development
+
 #Clean Code
 ---------------------------------------------------------------------------------------------
